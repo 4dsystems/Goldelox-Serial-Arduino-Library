@@ -86,7 +86,7 @@ class Goldelox_Serial_4DLib
 		word charwidth(char  TestChar) ;
 		word gfx_GetPixel(word  X, word  Y) ;
 		word gfx_Orbit(word  Angle, word  Distance, word *  Xdest, word *  Ydest) ;
-		word gfx_SetClipRegion(void) ;
+		void gfx_SetClipRegion(void) ;
 		word joystick(void) ;
 		word media_Flush(void) ;
 		word media_Init(void) ;
@@ -96,7 +96,7 @@ class Goldelox_Serial_4DLib
 		word media_WriteWord(word  word) ;
 		word peekB(word  Address) ;
 		word peekW(word  Address) ;
-		word putstr(char *  InString) ;
+		void putstr(char *  InString) ;
 		word sys_GetModel(char *  ModelStr) ;
 		word sys_GetPmmC(void) ;
 		word sys_GetVersion(void) ;
