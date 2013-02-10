@@ -91,7 +91,7 @@
 
 
   // binary, no leading zeroes
-#define BIN                     0x0002 // binary, 16 digits, no leading zeroes
+#define BIN4d                     0x0002 // binary, 16 digits, no leading zeroes
 #define BIN1                    0x0102 // binary, 1 digit, no leading zeroes
 #define BIN2                    0x0202 // binary, 2 digits, no leading zeroes
 #define BIN3                    0x0302 // binary, 3 digits, no leading zeroes
@@ -148,7 +148,7 @@
 #define BIN16ZB                 0x2002 // binary, 16 digits, leading blanks
 
     // signed decimal, no leading zeroes
-#define DEC                     0x050A // signed decimal, 5 digits, no leading zeroes
+#define DEC4d                   0x050A // signed decimal, 5 digits, no leading zeroes
 #define DEC1                    0x010A // signed decimal, 1 digit, no leading zeroes
 #define DEC2                    0x020A // signed decimal, 2 digits, no leading zeroes
 #define DEC3                    0x030A // signed decimal, 3 digits, no leading zeroes
@@ -196,7 +196,7 @@
 #define UDEC5ZB                 0x650A // unsigned decimal, 5 digits, leading blanks
 
     // hex, with leading zero's
-#define HEX                     0x1410 // hex, 4 digits, leading zeroes
+#define HEX4d                   0x1410 // hex, 4 digits, leading zeroes
 #define HEX1                    0x1110 // hex, 1 digit, leading zeroes
 #define HEX2                    0x1210 // hex, 2 digits, leading zeroes
 #define HEX3                    0x1310 // hex, 3 digits, leading zeroes
@@ -280,8 +280,8 @@
 #define IO2                     1
 #define LO                      0
 #define HI                      1
-#define OUTPUT                  0
-#define INPUT                   1
+#define OUTPUT4d                0
+#define INPUT4d                 1
 #define ANALOGUE_8              2
 #define ANALOGUE_10             3
 #define ONEWIRE                 4
@@ -426,10 +426,10 @@
 #define SECTOR_ADDR_HI          111 // uSD/FLASH sector address HI
 #define SYSTEM_TIMER_LO         112 // 1msec 32 bit free running timer LO word
 #define SYSTEM_TIMER_HI         113 // 1msec 32 bit free running timer HI word
-#define TIMER0                  114 // user timer0
-#define TIMER1                  115 // user timer1
-#define TIMER2                  116 // user timer2
-#define TIMER3                  117 // user timer3 (10msec resolution)
+#define TIMER04d                114 // user timer0
+#define TIMER14d                115 // user timer1
+#define TIMER24d                116 // user timer2
+#define TIMER34d                117 // user timer3 (10msec resolution)
 #define INCVAL                  118 // incrementer size
 #define TEMP_MEDIA_ADDRLO       119 // temp stroage while printing font from media storage
 #define TEMP_MEDIA_ADDRHI       120 // temp stroage while printing font from media storage
