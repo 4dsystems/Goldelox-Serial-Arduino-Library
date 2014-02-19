@@ -74,7 +74,7 @@
 
 #include "Goldelox_Serial_4DLib.h"
 #include "GoldeloxBigDemo.h" 
-#include "Goldelox_const4D.h"
+#include "Goldelox_Const4D.h"
 
 Goldelox_Serial_4DLib Display(&DisplaySerial);
 
