@@ -1,5 +1,4 @@
 Copy the Goldelox_Serial_4DLib folder to your Arduino 'libraries' folder
-Copy the GoldeloxBigDemo folder to your Arduino 'projects' folder
 
 NB!
 There is an issue with SoftwareSerial in Arduino 1.0.2 + 1.0.3 and

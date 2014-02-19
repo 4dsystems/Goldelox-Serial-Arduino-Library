@@ -3,7 +3,7 @@
 Goldelox-Serial-Arduino-Library
 =============================
 
-Arduino Library for 4D Systems Serial Environement for Goldelox based modules
+Arduino Library for 4D Systems Serial Environment for Goldelox based modules
 
 ## Information
 
@@ -19,5 +19,5 @@ For more information on the installation, please refer to [Installing Additional
 
 ## Example Sketch
 
-Please copy the BigDemo folder into your C:\Users\(User name)\My Documents\Arduino\ folder (restart the IDE if already open)
+The BigDemo example is provided inside the library examples folder.
 Please load and compile the BigDemo sketch to run a large demo, demonstrating a majority of the functions and features the library provides.
