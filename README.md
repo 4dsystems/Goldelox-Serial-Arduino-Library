@@ -21,3 +21,8 @@ For more information on the installation, please refer to [Installing Additional
 
 The BigDemo example is provided inside the library examples folder.
 Please load and compile the BigDemo sketch to run a large demo, demonstrating a majority of the functions and features the library provides.
+
+## Questions/Issues?
+
+Please sign up for our Forum and ask a question there, or submit a Tech Support Ticket from our website.
+http://forum.4dsystems.com.au or http://www.4dsystems.com.au/support
