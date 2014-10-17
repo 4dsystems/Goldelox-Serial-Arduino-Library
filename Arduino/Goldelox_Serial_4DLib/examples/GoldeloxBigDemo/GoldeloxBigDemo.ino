@@ -2,7 +2,7 @@
 /*                                                                                           */
 /*  Goldelox 4D Serial Sample                                                                */
 /*                                                                                           */
-/*  Date:            31 December 2012                                                        */
+/*  Date:            31 December 2012 (Updated 17th Octover 2014)                            */
 /*                                                                                           */
 /*  Description:     Demonstrates Pretty much every 4D Serial command.                       */
 /*                   This has been tested on an Arduino Duemilanove ATmega328 using Arduino  */
@@ -500,8 +500,17 @@ void Callback(int ErrCode, unsigned char ErrByte)
 #endif
 }
 
+#define RESETLINE 4
+
 void setup()
 {
+  pinMode(13,OUTPUT);
+  pinMode(RESETLINE, OUTPUT);  // Set D4 on Arduino to Output (4D Arduino Adaptor V2 - Display Reset)
+  digitalWrite(RESETLINE, 1);  // Reset the Display via D4
+  delay(100);
+  digitalWrite(RESETLINE, 0);  // unReset the Display via D4
+  delay(5000);
+  
 #ifdef LOG_MESSAGES
   HWLOGGING.begin(19200);
   HWLOGGING.print(F("\n\nBigDemo for Arduino\n"));
