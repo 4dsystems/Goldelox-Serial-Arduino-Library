@@ -715,6 +715,241 @@ void Goldelox_Serial_4DLib::putstr(char *  InString)
   WriteChars(InString) ;
   GetAck() ;
 }
+//////////////////////////////////////////////////////
+//-----------------print----------------------------------
+
+#ifdef AVR
+void Goldelox_Serial_4DLib::print(const __FlashStringHelper *ifsh)
+{
+  PGM_P p = reinterpret_cast<PGM_P>(ifsh);
+  size_t n = 0;
+  while (1) {
+    unsigned char c = pgm_read_byte(p++);
+    if (c == 0) break;
+    putCH(c);
+  }
+}
+#endif
+
+void Goldelox_Serial_4DLib::print(const String &s)
+{
+	int len = s.length();
+	char arr[len + 1];
+	s.toCharArray(arr,len + 1);
+	//putstr(arr);
+	for(int x=0; x<len; x++)
+	{
+		putCH(arr[x]);
+	}
+}
+
+void Goldelox_Serial_4DLib::print(const char str[])
+{
+  int len = strlen(str);
+  for(int x = 0; x<len; x++)
+  {
+	putCH(str[x]);
+  }
+}
+
+void Goldelox_Serial_4DLib::print(char c)
+{
+  putCH(c);
+}
+
+void Goldelox_Serial_4DLib::print(unsigned char b, int base)
+{
+  print((unsigned long) b, base);
+}
+
+void Goldelox_Serial_4DLib::print(int n, int base)
+{
+  print((long) n, base);
+}
+
+void Goldelox_Serial_4DLib::print(unsigned int n, int base)
+{
+  print((unsigned long) n, base);
+}
+
+void Goldelox_Serial_4DLib::print(long n, int base)
+{
+
+  if (base == 10) 
+  {
+    if (n < 0) 
+	{
+      //int t = print('-');
+	  putCH('-');
+      n = -n;
+      printNumber(n, 10);
+    }
+	else
+	{
+	printNumber(n, 10);
+	}
+  } 
+  else 
+  {
+    printNumber(n, base);
+  }
+
+}
+
+void Goldelox_Serial_4DLib::print(unsigned long n, int base)
+{
+  printNumber(n, base);
+}
+
+void Goldelox_Serial_4DLib::print(double n, int digits)
+{
+  printFloat(n, digits);
+}
+
+
+//println
+
+void Goldelox_Serial_4DLib::println(const __FlashStringHelper *ifsh)
+{
+  print(ifsh);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(const String &s)
+{
+  print(s);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(const char c[])
+{
+  print(c);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(char c)
+{
+  print((char)c);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(unsigned char b, int base)
+{
+  print((unsigned char)b, base);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(int num, int base)
+{
+  print((int)num, base);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(unsigned int num, int base)
+{
+  print((unsigned int)num, base);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(long num, int base)
+{
+  print((long)num, base);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(unsigned long num, int base)
+{
+  print((unsigned long)num, base);
+  putCH('\n');
+  putCH('\r');
+}
+
+void Goldelox_Serial_4DLib::println(double num, int digits)
+{
+  print((double)num, digits);
+  putCH('\n');
+  putCH('\r');
+}
+
+
+//-Private:
+
+void Goldelox_Serial_4DLib::printNumber(unsigned long n, uint8_t base) {
+  char buf[8 * sizeof(long) + 1]; // Assumes 8-bit chars plus zero byte.
+  int count = 0;
+  do {
+    unsigned long m = n;
+    n /= base;
+    char c = m - base * n;
+    buf[count] = c < 10 ? c + '0' : c + 'A' - 10;
+    count++;
+  } while(n);
+  
+  for(int x = count - 1; x>=0; x--)
+  {
+	putCH(buf[x]);
+  }
+}
+
+void Goldelox_Serial_4DLib::printFloat(double number, uint8_t digits) 
+{ 
+  size_t n = 0;
+  if (isnan(number)) print("nan"); 
+  else if (isinf(number)) print("inf"); 
+  else if (number > 4294967040.0) print ("ovf");  // constant determined empirically
+  else if (number <-4294967040.0) print ("ovf");  // constant determined empirically
+  else{
+  // Handle negative numbers
+  if (number < 0.0)
+  {
+     putCH('-');
+     number = -number;
+  }
+
+  // Round correctly so that print(1.999, 2) prints as "2.00"
+  double rounding = 0.5;
+  for (uint8_t i=0; i<digits; ++i)
+    rounding /= 10.0;
+  
+  number += rounding;
+
+  // Extract the integer part of the number and print it
+  unsigned long int_part = (unsigned long)number;
+  double remainder = number - (double)int_part;
+  //print((unsigned long)int_part);
+  printNumber(int_part, 10);
+
+  // Print the decimal point, but only if there are digits beyond
+  if (digits > 0) {
+    putCH('.'); 
+  }
+
+  // Extract digits from the remainder one at a time
+  while (digits-- > 0)
+  {
+    remainder *= 10.0;
+    int toPrint = int(remainder);
+    printNumber((unsigned long)toPrint, 10);
+    remainder -= toPrint; 
+  } 
+  }
+}
+
+
+//--------------------------------------------------------
+
+
+
+
+//////////////////////////////////////////////////////
 
 void Goldelox_Serial_4DLib::txt_Attributes(word  Attribs)
 {
