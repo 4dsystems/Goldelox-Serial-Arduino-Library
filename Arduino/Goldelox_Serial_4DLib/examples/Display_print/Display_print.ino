@@ -15,10 +15,11 @@ Goldelox_Serial_4DLib Display(&DisplaySerial);
 void setup() {
   //For handling errors
   Display.Callback4D = mycallback ;
-  //
+
   //5 second timeout on all commands  
-  Display.TimeLimit4D   = 5000 ;
-  Serial.begin(9600) ;
+  Display.TimeLimit4D = 5000 ;
+  
+  DisplaySerial.begin(9600) ;
 
   //--------------------------------Optional reset routine-----------------------------------
   //Reset the Display using D4 of the Arduino (if using the new 4D Arduino Adaptor - Rev 2)
@@ -63,7 +64,7 @@ void setup() {
   Display.print(c); Display.print(' ');
   Display.println(c2);
   Display.println("This is String"); 
-  Display.println(F("This is Flashstring")); 
+  Display.println(F("This is Flashstring"));  // COMMENT OUT FOR ARDUINO DUE, NOT SUPPORTED
   Display.println(string); 
   Display.println(charr);
   Display.println(d,6);
