@@ -140,7 +140,7 @@ class Goldelox_Serial_4DLib
 		int Error4D;  				// Error indicator,  used and set by Intrinsic routines
 		unsigned char Error4D_Inv;	// Error byte returned from com port, onl set if error = Err_Invalid
 	//	int Error_Abort4D;  		// if true routines will abort when detecting an error
-		unsigned long TimeLimit4D;	// time limit in ms for total serial command duration, 2000 (2 seconds) should be adequate for most commands
+		unsigned long TimeLimit4D = 2000;	// time limit in ms for total serial command duration, 2000 (2 seconds) should be adequate for most commands
 									// assuming a reasonable baud rate AND low latency AND 0 for the Serial Delay Parameter
 									// temporary increase might be required for very long (bitmap write, large image file opens)
 									// or indeterminate (eg file_exec, file_run, file_callFunction) commands
