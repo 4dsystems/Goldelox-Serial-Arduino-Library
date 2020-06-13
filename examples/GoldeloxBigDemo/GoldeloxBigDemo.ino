@@ -521,7 +521,7 @@ void loop()
 {
   int i, rc ;
   char wks[20] ;
-  Display.TimeLimit4D   = 5000 ; // 2 second timeout on all commands
+  Display.TimeLimit4D = 5000 ; // 5 second timeout on all commands
   Display.Callback4D = Callback ; // NULL ;
   DisplaySerial.begin(9600) ;
 
