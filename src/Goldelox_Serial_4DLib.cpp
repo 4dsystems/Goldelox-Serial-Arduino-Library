@@ -12,8 +12,8 @@
 
 Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(Stream * virtualPort) { 
     _virtualPort = virtualPort; 
-#ifndef _SAM3XA_
-	// Only done on non Arduino Due Boards
+#if !defined(ARDUINO_ARCH_SAMD) || (ARDUINO_ARCH_SAM)
+	//Only done for non-SAMD/SAM architectures
 	_virtualPort->flush();
 #endif
 }
