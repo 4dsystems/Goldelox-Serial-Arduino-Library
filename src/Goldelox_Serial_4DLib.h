@@ -22,6 +22,11 @@
 
 #include <string.h>
 
+#ifdef AVR
+#include <SoftwareSerial.h> // uncomment this line to add direct support for SoftwareSerial
+// #include <AltSoftSerial.h> // uncomment this line to add direct support for AltSoftSerial (Note: AltSoftSerial needs to be installed in Arduino IDE)
+#endif
+
 #define DEC 10
 #define HEX 16
 #define OCT 8
@@ -32,7 +37,14 @@ typedef void (*Tcallback4D)(int, unsigned char);
 class Goldelox_Serial_4DLib
 {
 	public:
-		Goldelox_Serial_4DLib(Stream * virtualPort);
+		Goldelox_Serial_4DLib(Stream * virtualPort, void (*setBaudRateHndl)(unsigned long) = NULL);
+		Goldelox_Serial_4DLib(HardwareSerial * serial);
+#ifdef SoftwareSerial_h		
+		Goldelox_Serial_4DLib(SoftwareSerial * serial);
+#endif
+#ifdef AltSoftSerial_h
+	    Goldelox_Serial_4DLib(AltSoftSerial * serial);
+#endif
 		Tcallback4D Callback4D ;
 		
 		//Compound 4D Routines
@@ -95,7 +107,7 @@ class Goldelox_Serial_4DLib
 
 		//------------------------------------------------/
 
-		void setbaudWait(word  Newrate) ;
+		bool setbaudWait(word Newrate) ;
 		void SSMode(word  Parm) ;
 		void SSSpeed(word  Speed) ;
 		void SSTimeout(word  Seconds) ;
@@ -146,7 +158,20 @@ class Goldelox_Serial_4DLib
 									// or indeterminate (eg file_exec, file_run, file_callFunction) commands
 		
 	private:
-                Stream * _virtualPort;
+		bool unknownSerial = false;
+		Stream * _virtualPort;
+		unsigned long GetBaudRate(word Newrate);
+		void (*setBaudRateExternal)(unsigned long newRate);
+		void (Goldelox_Serial_4DLib::*setBaudRateInternal)(unsigned long newRate);
+
+		void exSetBaudRateHndl(unsigned long newRate);
+		void hwSetBaudRateHndl(unsigned long newRate);
+#ifdef SoftwareSerial_h
+		void swSetBaudRateHndl(unsigned long newRate);
+#endif
+#ifdef AltSoftSerial_h
+		void alSetBaudRateHndl(unsigned long newRate);
+#endif	
 
 		//Intrinsic 4D Routines
 		void WriteChars(char * charsout);
@@ -160,7 +185,6 @@ class Goldelox_Serial_4DLib
 		void GetAck2Words(word * word1, word * word2);
 		word GetAckResStr(char * OutStr);
 	//	word GetAckResData(t4DByteArray OutData, word size);
-		void SetThisBaudrate(int Newrate);
 		
 		void printNumber(unsigned long, uint8_t);
 		void printFloat(double number, uint8_t digits);
