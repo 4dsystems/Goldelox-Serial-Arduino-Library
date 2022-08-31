@@ -11,44 +11,28 @@
 #endif
 
 Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(Stream * virtualPort, void (*setBaudRateHndl)(unsigned long)) { 
-    _virtualPort = virtualPort; 
-    setBaudRateExternal = setBaudRateHndl;
-    setBaudRateInternal = &Goldelox_Serial_4DLib::exSetBaudRateHndl;
-    unknownSerial = true;
-#if !defined(ARDUINO_ARCH_SAMD) || (ARDUINO_ARCH_SAM)
-	//Only done for non-SAMD/SAM architectures
-	_virtualPort->flush();
-#endif
+  _virtualPort = virtualPort; 
+  setBaudRateExternal = setBaudRateHndl;
+  setBaudRateInternal = &Goldelox_Serial_4DLib::exSetBaudRateHndl;
+  unknownSerial = true;
 }
 
 Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(HardwareSerial * serial) { 
-    _virtualPort = (Stream *)serial; 
-    setBaudRateInternal = &Goldelox_Serial_4DLib::hwSetBaudRateHndl;
-#if !defined(ARDUINO_ARCH_SAMD) || (ARDUINO_ARCH_SAM)
-	//Only done for non-SAMD/SAM architectures
-	_virtualPort->flush();
-#endif
+  _virtualPort = (Stream *)serial; 
+  setBaudRateInternal = &Goldelox_Serial_4DLib::hwSetBaudRateHndl;
 }
 
 #ifdef SoftwareSerial_h		
 Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(SoftwareSerial * serial) { 
-    _virtualPort = (Stream *)serial; 
-    setBaudRateInternal = &Goldelox_Serial_4DLib::swSetBaudRateHndl;
-#if !defined(ARDUINO_ARCH_SAMD) || (ARDUINO_ARCH_SAM)
-	//Only done for non-SAMD/SAM architectures
-	_virtualPort->flush();
-#endif
+  _virtualPort = (Stream *)serial; 
+  setBaudRateInternal = &Goldelox_Serial_4DLib::swSetBaudRateHndl;
 }
 #endif
 
 #ifdef AltSoftSerial_h
 Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(AltSoftSerial * serial) { 
-    _virtualPort = (Stream *)serial; 
-    setBaudRateInternal = &Goldelox_Serial_4DLib::alSetBaudRateHndl;
-#if !defined(ARDUINO_ARCH_SAMD) || (ARDUINO_ARCH_SAM)
-	//Only done for non-SAMD/SAM architectures
-	_virtualPort->flush();
-#endif
+  _virtualPort = (Stream *)serial; 
+  setBaudRateInternal = &Goldelox_Serial_4DLib::alSetBaudRateHndl;
 }
 #endif
 
