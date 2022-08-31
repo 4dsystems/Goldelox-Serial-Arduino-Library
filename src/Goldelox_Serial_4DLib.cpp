@@ -10,13 +10,31 @@
 	#include "WProgram.h" // for Arduino 23
 #endif
 
-Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(Stream * virtualPort) { 
-    _virtualPort = virtualPort; 
-#if !defined(ARDUINO_ARCH_SAMD) || (ARDUINO_ARCH_SAM)
-	//Only done for non-SAMD/SAM architectures
-	_virtualPort->flush();
-#endif
+Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(Stream * virtualPort, void (*setBaudRateHndl)(unsigned long)) { 
+  _virtualPort = virtualPort; 
+  setBaudRateExternal = setBaudRateHndl;
+  setBaudRateInternal = &Goldelox_Serial_4DLib::exSetBaudRateHndl;
+  unknownSerial = true;
 }
+
+Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(HardwareSerial * serial) { 
+  _virtualPort = (Stream *)serial; 
+  setBaudRateInternal = &Goldelox_Serial_4DLib::hwSetBaudRateHndl;
+}
+
+#ifdef SoftwareSerial_h		
+Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(SoftwareSerial * serial) { 
+  _virtualPort = (Stream *)serial; 
+  setBaudRateInternal = &Goldelox_Serial_4DLib::swSetBaudRateHndl;
+}
+#endif
+
+#ifdef AltSoftSerial_h
+Goldelox_Serial_4DLib::Goldelox_Serial_4DLib(AltSoftSerial * serial) { 
+  _virtualPort = (Stream *)serial; 
+  setBaudRateInternal = &Goldelox_Serial_4DLib::alSetBaudRateHndl;
+}
+#endif
 
 //*********************************************************************************************//
 //**********************************Intrinsic 4D Routines**************************************//
@@ -197,68 +215,6 @@ word Goldelox_Serial_4DLib::GetAckResStr(char * OutStr)
 	Result = GetWord() ;
 	getString(OutStr, Result) ;
 	return Result ;
-}
-/*
-word Goldelox_Serial_4DLib::GetAckResData(t4DByteArray OutData, word size)
-{
-	int Result ;
-	GetAck() ;
-	Result = GetWord() ;
-	getbytes(OutData, size) ;
-	return Result ;
-}
-*/
-void Goldelox_Serial_4DLib::SetThisBaudrate(int Newrate)
-{
-  int br ;
-  _virtualPort->flush() ;
-//  _virtualPort->end() ;
-  switch(Newrate)
-  {
- /*   case BAUD_110    : br = 110 ;
-      break ;
-    case BAUD_300    : br = 300 ;
-      break ;
-    case BAUD_600    : br = 600 ;
-      break ;
-    case BAUD_1200   : br = 1200 ;
-      break ;
-    case BAUD_2400   : br = 2400 ;
-      break ;
-    case BAUD_4800   : br = 4800 ;
-      break ;*/
-    case BAUD_9600   : br = 9600 ;
-      break ;
-//   case BAUD_14400  : br = 14400 ;
-//      break ;
-    case BAUD_19200  : br = 19200 ;
-      break ;
- /*   case BAUD_31250  : br = 31250 ;
-      break ;
-    case BAUD_38400  : br = 38400 ;
-      break ;
-    case BAUD_56000  : br = 56000 ;
-      break ;
-    case BAUD_57600  : br = 57600 ;
-      break ;
-    case BAUD_115200 : br = 115200 ;
-      break ;
-    case BAUD_128000 : br = 133928 ; // actual rate is not 128000 ;
-      break ;
-    case BAUD_256000 : br = 281250 ; // actual rate is not  256000 ;
-      break ;
-    case BAUD_300000 : br = 312500 ; // actual rate is not  300000 ;
-      break ;
-    case BAUD_375000 : br = 401785 ; // actual rate is not  375000 ;
-      break ;
-    case BAUD_500000 : br = 562500 ; // actual rate is not  500000 ;
-      break ;
-    case BAUD_600000 : br = 703125 ; // actual rate is not  600000 ;
-      break ;*/
-  }
-//  _virtualPort->begin(br) ;
-  delay(50) ; // Display sleeps for 100
-  _virtualPort->flush() ;
 }
 
 //*********************************************************************************************//
@@ -1141,16 +1097,6 @@ void Goldelox_Serial_4DLib::blitComtoDisplay(word  X, word  Y, word  Width, word
   GetAck() ;
 }
 
-void Goldelox_Serial_4DLib::setbaudWait(word  Newrate)
-{
-  _virtualPort->print((char)(F_setbaudWait >> 8)) ;
-  _virtualPort->print((char)(F_setbaudWait)) ;
-  _virtualPort->print((char)(Newrate >> 8)) ;
-  _virtualPort->print((char)(Newrate)) ;
-  SetThisBaudrate(Newrate) ; // change this systems baud rate to match new display rate, ACK is 100ms away
-  GetAck() ;
-}
-
 word Goldelox_Serial_4DLib::peekW(word  Address)
 {
   _virtualPort->print((char)(F_peekW >> 8)) ;
@@ -1224,3 +1170,121 @@ void Goldelox_Serial_4DLib::SSMode(word  Parm)
   _virtualPort->print((char)(Parm)) ;
   GetAck() ;
 }
+
+unsigned long Goldelox_Serial_4DLib::GetBaudRate(word Newrate)
+{
+  unsigned long br ;
+  switch(Newrate)
+  {
+    case BAUD_110:
+      br = 110l ;
+      break ;
+    case BAUD_300:
+      br = 300l ;
+      break ;
+    case BAUD_600:
+      br = 600l ;
+      break ;
+    case BAUD_1200:
+      br = 1200l ;
+      break ;
+    case BAUD_2400:
+      br = 2400l ;
+      break ;
+    case BAUD_4800:
+      br = 4800l ;
+      break ;
+    case BAUD_9600:
+      br = 9600l ;
+      break ;
+    case BAUD_14400:
+      br = 14400l ;
+     break ;
+    case BAUD_19200:
+      br = 19200l ;
+      break ;
+    case BAUD_31250:
+      br = 31250l ;
+      break ;
+    case BAUD_38400:
+      br = 38400l ;
+      break ;
+    case BAUD_56000:
+      br = 56000l ;
+      break ;
+    case BAUD_57600:
+      br = 57600l ;
+      break ;
+    case BAUD_115200:
+      br = 115200l ;
+      break ;
+    case BAUD_128000:
+      br = 133928l ; // actual rate is not 128000 ;
+      break ;
+    case BAUD_256000:
+      br = 281250l ; // actual rate is not  256000 ;
+      break ;
+    case BAUD_300000:
+      br = 312500l ; // actual rate is not  300000 ;
+      break ;
+    case BAUD_375000:
+      br = 401785l ; // actual rate is not  375000 ;
+      break ;
+    case BAUD_500000:
+      br = 562500l ; // actual rate is not  500000 ;
+      break ;
+    case BAUD_600000:
+      br = 703125l ; // actual rate is not  600000 ;
+      break ;
+    default:
+      br = 0;
+      break;
+  }
+  return br;
+}
+
+bool Goldelox_Serial_4DLib::setbaudWait(word Newrate)
+{
+  if (unknownSerial && (setBaudRateExternal == NULL)) return false;
+  unsigned long baudrate = GetBaudRate(Newrate);
+  if (baudrate == 0) return false;
+  _virtualPort->print((char)(F_setbaudWait >> 8));
+  _virtualPort->print((char)(F_setbaudWait));
+  _virtualPort->print((char)(Newrate >> 8));
+  _virtualPort->print((char)(Newrate));
+  (this->*setBaudRateInternal)(baudrate); // change this systems baud rate to match new display rate, ACK is 100ms away
+  GetAck() ;
+  return true;
+}
+
+void Goldelox_Serial_4DLib::exSetBaudRateHndl(unsigned long newRate) {
+  setBaudRateExternal(newRate);
+}
+
+void Goldelox_Serial_4DLib::hwSetBaudRateHndl(unsigned long newRate) {
+  ((HardwareSerial *)_virtualPort)->flush();
+  ((HardwareSerial *)_virtualPort)->end();
+  ((HardwareSerial *)_virtualPort)->begin(newRate);
+  delay(50) ; // Display sleeps for 100
+  ((HardwareSerial *)_virtualPort)->flush();
+}
+
+#ifdef SoftwareSerial_h
+void Goldelox_Serial_4DLib::swSetBaudRateHndl(unsigned long newRate) {
+  ((SoftwareSerial *)_virtualPort)->flush();
+  ((SoftwareSerial *)_virtualPort)->end();
+  ((SoftwareSerial *)_virtualPort)->begin(newRate);
+  delay(50) ; // Display sleeps for 100
+  ((SoftwareSerial *)_virtualPort)->flush();  
+}
+#endif
+
+#ifdef AltSoftSerial_h
+void Goldelox_Serial_4DLib::alSetBaudRateHndl(unsigned long newRate) {
+  ((AltSoftSerial *)_virtualPort)->flush();
+  ((AltSoftSerial *)_virtualPort)->end();
+  ((AltSoftSerial *)_virtualPort)->begin(newRate);
+  delay(50) ; // Display sleeps for 100
+  ((AltSoftSerial *)_virtualPort)->flush();  
+}
+#endif

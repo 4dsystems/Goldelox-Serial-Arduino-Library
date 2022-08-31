@@ -20,7 +20,7 @@
 /*                                                                                           */
 /*                   Define the serial port to use here, if using software serial set it to  */
 /*                   something like SerialS.                                                 */
-  #define DisplaySerial Serial
+#define DisplaySerial Serial
 /*                                                                                           */
 /*                   To use SoftwareSerial uncomment the following and set the pins you are  */
 /*                   using correctly                                                         */
@@ -49,9 +49,6 @@
 /*                   occurs. If you want to do your own handling set Callback4D to NULL      */
 /*                   otherwise set it to the address of the error routine                    */
 /*                                                                                           */
-/* Baud rate change  Because the stream class used within the library does not support       */
-/*                   .end, or .begin the setbaudWait and SetThisBaudrate functions are       */
-/*                   coded within this demo                                                  */
 /*                                                                                           */
 /*     NB!           There is an issue with SoftwareSerial in Arduino 1.0.2 + 1.0.3 and      */
 /*                   possibly above which affects Goldelox Displays, refer here:-            */
@@ -76,73 +73,23 @@
 #include "GoldeloxBigDemo.h" 
 #include "Goldelox_Const4D.h"
 
+// Use this if using HardwareSerial or SoftwareSerial
 Goldelox_Serial_4DLib Display(&DisplaySerial);
+
+// Use this block if using a different Serial class
+//
+// void customSetBaudRate(unsigned long newRate) {
+//   DisplaySerial.flush();
+//   DisplaySerial.end();
+//   DisplaySerial.begin(newRate);
+//   delay(50) ; // Display sleeps for 100
+//   DisplaySerial.flush();  
+// }
+// Goldelox_Serial_4DLib Display(&DisplaySerial, customSetBaudRate);
+
 
 // globals for this program
 int fmediatests ;
-
-void SetThisBaudrate(int Newrate)
-{
-  int br ;
-  DisplaySerial.flush() ;
-  DisplaySerial.end() ;
-  switch(Newrate)
-  {
-    case BAUD_110    : br = 110 ;
-      break ;
-    case BAUD_300    : br = 300 ;
-      break ;
-    case BAUD_600    : br = 600 ;
-      break ;
-    case BAUD_1200   : br = 1200 ;
-      break ;
-    case BAUD_2400   : br = 2400 ;
-      break ;
-    case BAUD_4800   : br = 4800 ;
-      break ;
-    case BAUD_9600   : br = 9600 ;
-      break ;
-    case BAUD_14400  : br = 14400 ;
-      break ;
-    case BAUD_19200  : br = 19200 ;
-      break ;
-    case BAUD_31250  : br = 31250 ;
-      break ;
-    case BAUD_38400  : br = 38400 ;
-      break ;
-    case BAUD_56000  : br = 56000 ;
-      break ;
-    case BAUD_57600  : br = 57600 ;
-      break ;
-    case BAUD_115200 : br = 115200 ;
-      break ;
-    case BAUD_128000 : br = 133928 ; // actual rate is not 128000 ;
-      break ;
-    case BAUD_256000 : br = 281250 ; // actual rate is not  256000 ;
-      break ;
-    case BAUD_300000 : br = 312500 ; // actual rate is not  300000 ;
-      break ;
-    case BAUD_375000 : br = 401785 ; // actual rate is not  375000 ;
-      break ;
-    case BAUD_500000 : br = 562500 ; // actual rate is not  500000 ;
-      break ;
-    case BAUD_600000 : br = 703125 ; // actual rate is not  600000 ;
-      break ;
-  }
-  DisplaySerial.begin(br) ;
-  delay(50) ; // Display sleeps for 100
-  DisplaySerial.flush() ;
-}
-
-void setbaudWait(word  Newrate)
-{
-  DisplaySerial.print((char)(F_setbaudWait >> 8));
-  DisplaySerial.print((char)(F_setbaudWait));
-  DisplaySerial.print((char)(Newrate >> 8));
-  DisplaySerial.print((char)(Newrate));
-  SetThisBaudrate(Newrate); // change this systems baud rate to match new display rate, ACK is 100ms away
-  Display.GetAck() ;
-}
 
 int trymount(void)
 {
@@ -571,9 +518,9 @@ void loop()
 
 //Display.BeeP(40,2000) ;
   Display.gfx_Cls() ;
-  setbaudWait(BAUD_19200) ;
+  Display.setbaudWait(BAUD_19200) ;
   Display.putstr("Hi at 19200\n") ;
-  setbaudWait(BAUD_9600) ;
+  Display.setbaudWait(BAUD_9600) ;
   Display.putstr("Back to 9600\n") ;
   delay(5000);
 }
