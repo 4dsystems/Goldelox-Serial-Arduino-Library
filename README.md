@@ -1,4 +1,4 @@
-![image](http://www.4dsystems.com.au/downloads/4DLogo.png)
+![4D Logo](./logo.jpg)
 
 Goldelox-Serial-Arduino-Library
 =============================
@@ -7,15 +7,17 @@ Arduino Library for 4D Systems Serial Environment for Goldelox based modules
 
 ## Information
 
-This library is provided with the installation of Workshop 4 from 4D Systems, however can be downloaded here for people who do not run Windows.
 This library provides high level functions for the Arduino, to ease communication with Goldelox based modules when using the module configured for Serial.
-Please refer to the 4D Systems website, namingly the Workshop 4 Product Page, for documentation regarding Workshop 4, and its environments.
+Please refer to the 4D Systems website, namingly the Workshop4 Product Page, for documentation regarding Workshop4, and its environments.
 
 ## Installation
 
-Library should be placed in the C:\Users\(User name)\My Documents\Arduino\Libraries\ folder, or equivalent. (restart the IDE if already open)
+It is advisable to simply use the Arduino IDE's library manager to search and install Picaso Serial Arduino Library.
 
-For more information on the installation, please refer to [Installing Additional Arduino Libraries] (http://arduino.cc/en/Guide/Libraries)
+For more information on the installation, please refer to the following documentation from Arduino:
+
+- Arduino 1.x: [Installing Libraries](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries)
+- Arduino 2.x: [Installing Libraries](https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-installing-a-library)
 
 ## Example Sketch
 
